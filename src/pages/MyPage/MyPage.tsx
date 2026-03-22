@@ -128,7 +128,7 @@ const MyPage = () => {
 
   return (
     <div className="mypage-container">
-      <h1>마이페이지</h1>
+      <h2 className="mypage-title">마이페이지</h2>
 
       <div className="mypage-profile-card">
         {/* 프로필 이미지 영역 */}

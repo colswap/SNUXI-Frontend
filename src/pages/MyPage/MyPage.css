@@ -6,6 +6,14 @@
   text-align: center;
 }
 
+.mypage-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 20px 0;
+  letter-spacing: 0.01em;
+}
+
 .mypage-profile-card {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
@@ -284,4 +292,14 @@
   color: var(--text-primary);
   font-size: 1.05rem;
   font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .mypage-container {
+    margin: 16px auto;
+    padding: 0 12px 32px;
+  }
+  .mypage-profile-card {
+    padding: 24px 20px;
+  }
 }

@@ -221,3 +221,16 @@ h1 {
 .create-button:active {
   transform: scale(0.98);
 }
+
+@media (max-width: 480px) {
+  .create-container {
+    padding: 16px 12px 32px;
+  }
+  h1 {
+    font-size: 1.4rem;
+    margin: 16px 0;
+  }
+  .card {
+    padding: 16px;
+  }
+}
