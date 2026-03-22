@@ -9,12 +9,10 @@ const NavBar = () => {
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const [userRole] = useAtom(userRoleAtom);
 
-  // 한글 메뉴명 적용
   const mainLinks = [
     { path: '/search-room', label: '택시팟 찾기' },
     { path: '/create-room', label: '택시팟 만들기' },
     { path: '/my-chat', label: '나의 택시팟' },
-    { path: '/my-page', label: '마이페이지' },
   ];
 
   const isLinkActive = (path: string) => {
@@ -60,7 +58,7 @@ const NavBar = () => {
           ))}
         </div>
 
-        {/* 3. 우측 로그인/관리자 영역 */}
+        {/* 3. 우측 영역 */}
         <div className="nav-right">
           {userRole === 'ADMIN' && (
             <Link to="/admin" className="admin-link">
@@ -68,20 +66,23 @@ const NavBar = () => {
             </Link>
           )}
 
+          <Link
+            to="/my-page"
+            className={`mypage-icon-link ${isLinkActive('/my-page') ? 'active' : ''}`}
+            title="마이페이지"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </Link>
+
           {isLoggedIn ? (
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="login-button"
-            >
+            <button type="button" onClick={handleLogout} className="login-button">
               로그아웃
             </button>
           ) : (
-            <button
-              type="button"
-              onClick={handleGoogleLogin}
-              className="login-button"
-            >
+            <button type="button" onClick={handleGoogleLogin} className="login-button">
               로그인
             </button>
           )}

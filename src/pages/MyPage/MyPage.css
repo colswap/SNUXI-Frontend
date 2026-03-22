@@ -120,7 +120,7 @@
 
 .mypage-nickname-input:focus {
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
 }
 
 /* Button group */
@@ -143,7 +143,7 @@
   cursor: pointer;
   font-weight: 700;
   font-size: 0.9rem;
-  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
   transition: opacity 0.2s, transform 0.1s;
 }
 
@@ -170,8 +170,8 @@
 }
 
 .mypage-cancel-btn:hover {
-  background: #ede9fe;
-  border-color: #a5b4fc;
+  background: #f3f4f6;
+  border-color: #9ca3af;
   color: var(--brand-primary);
 }
 
@@ -262,7 +262,7 @@
   font-weight: 700;
   transition: opacity 0.2s;
   margin-top: 8px;
-  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 
 .mypage-close-button:hover {

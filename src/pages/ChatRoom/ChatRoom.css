@@ -81,7 +81,7 @@
   padding: 9px 18px;
   border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -104,8 +104,8 @@
   margin: 14px 0;
 }
 .date-separator span {
-  background-color: rgba(79, 70, 229, 0.08);
-  color: var(--brand-primary);
+  background-color: rgba(0,0,0,0.04);
+  color: var(--text-muted);
   font-size: 0.72rem;
   font-weight: 600;
   padding: 4px 14px;
@@ -117,7 +117,7 @@
   display: flex;
   align-items: center;
   margin: 18px 0;
-  color: var(--brand-primary);
+  color: var(--text-secondary);
   font-size: 0.78rem;
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -126,11 +126,11 @@
 .unread-marker::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid rgba(79, 70, 229, 0.25);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 .unread-marker span {
   margin: 0 10px;
-  background: rgba(79, 70, 229, 0.1);
+  background: rgba(0,0,0,0.06);
   padding: 4px 12px;
   border-radius: 20px;
   font-weight: 600;
@@ -227,7 +227,7 @@
   background: var(--brand-gradient);
   color: #ffffff;
   border-bottom-right-radius: 5px;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 .my-message .message-content-wrapper {
   align-items: flex-end;
@@ -266,7 +266,7 @@
   margin: 10px 0;
 }
 .bot-message .message-content {
-  background-color: rgba(79, 70, 229, 0.06);
+  background-color: rgba(0,0,0,0.04);
   color: var(--text-secondary);
   text-align: center;
   font-size: 0.82rem;
@@ -305,7 +305,7 @@
 }
 .message-input-container input:focus {
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
 }
 
 .message-input-container button.send-button {
@@ -320,7 +320,7 @@
   justify-content: center;
   transition: opacity 0.2s, transform 0.1s;
   flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 .message-input-container button.send-button:hover {
   opacity: 0.9;
@@ -489,7 +489,7 @@
 .action-button.primary {
   background: var(--brand-gradient);
   color: white;
-  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 .action-button.danger {
   background: linear-gradient(135deg, #ef4444, #dc2626);
@@ -585,7 +585,7 @@
   font-size: 0.95rem;
   font-weight: 700;
   width: 100%;
-  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 
 /* Report modal */
@@ -612,8 +612,8 @@
 }
 
 .report-item:hover {
-  border-color: #a5b4fc;
-  background: #ede9fe;
+  border-color: #9ca3af;
+  background: #f3f4f6;
 }
 
 .report-item input[type="radio"] {

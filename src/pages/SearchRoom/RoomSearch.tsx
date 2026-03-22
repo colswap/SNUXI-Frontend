@@ -237,7 +237,7 @@ const RoomSearch = () => {
     <div className="search-container">
       <div className="sticky-header">
         <h1>택시팟 찾기</h1>
-        <p className="header-subtitle">SNU 학생들과 함께 택시를 나눠요 🚕</p>
+        <p className="header-subtitle">SNU 학생들과 함께 택시를 나눠요</p>
         <div className="search-filter-card">
           <div className="filter-row">
             <select
@@ -277,7 +277,16 @@ const RoomSearch = () => {
               />
             ))
           : !loading && (
-              <div className="no-result">조건에 맞는 방이 없습니다.</div>
+              <div className="no-result">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 11l1.5-4.5h11L19 11" />
+                  <rect x="2" y="11" width="20" height="7" rx="2" />
+                  <circle cx="7" cy="18" r="2" />
+                  <circle cx="17" cy="18" r="2" />
+                  <path d="M2 15h20" />
+                </svg>
+                조건에 맞는 방이 없습니다.
+              </div>
             )}
 
         {hasMore && (
