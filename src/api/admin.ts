@@ -135,9 +135,9 @@ export interface AdminPot {
   destinationName: string;
   departureTime: string;
   participantCount: number;
-  kakaoCallStatus: string;
-  kakaoCallAt: string | null;
-  kakaoCallError: string | null;
+  kakaoDeepLinkStatus: string;
+  kakaoDeepLinkAt: string | null;
+  kakaoDeepLinkError: string | null;
   createdAt: string;
 }
 

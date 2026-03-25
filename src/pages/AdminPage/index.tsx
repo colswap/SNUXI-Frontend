@@ -248,9 +248,9 @@ const AdminPage = () => {
                   <td>{pot.destinationName}</td>
                   <td>{formatDate(pot.departureTime)}</td>
                   <td>{pot.participantCount}</td>
-                  <td>{pot.kakaoCallStatus || '—'}</td>
-                  <td>{pot.kakaoCallAt ? formatDate(pot.kakaoCallAt) : '—'}</td>
-                  <td>{pot.kakaoCallError || '—'}</td>
+                  <td>{pot.kakaoDeepLinkStatus || '—'}</td>
+                  <td>{pot.kakaoDeepLinkAt ? formatDate(pot.kakaoDeepLinkAt) : '—'}</td>
+                  <td>{pot.kakaoDeepLinkError || '—'}</td>
                   <td>{formatDate(pot.createdAt)}</td>
                 </tr>
               ))}
