@@ -1,41 +1,30 @@
-import { isAxiosError } from 'axios';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import type { AdminRoom, AdminUser, PageInfo, Report } from '../../api/admin';
-import { getAdminRooms, getAdminUsers, getReports } from '../../api/admin';
-import { getLandmarks } from '../../api/map';
+import { useNavigate } from 'react-router-dom';
+import type { AdminPot, AdminUser } from '../../api/admin';
+import {
+  getAdminPots,
+  getAdminUsers,
+  suspendUser,
+  unsuspendUser,
+} from '../../api/admin';
 import { userRoleAtom } from '../../common/user';
 import './AdminPage.css';
 
 const AdminPage = () => {
   const navigate = useNavigate();
   const [userRole] = useAtom(userRoleAtom);
-  const [reports, setReports] = useState<Report[]>([]);
-  const [pageInfo, setPageInfo] = useState<PageInfo | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Stats
+  const [activeTab, setActiveTab] = useState<'users' | 'pots'>('users');
   const [totalUsers, setTotalUsers] = useState<number | null>(null);
-  const [totalPots, setTotalPots] = useState<number | null>(null);
-
-  // Users table
   const [users, setUsers] = useState<AdminUser[]>([]);
-  const [usersPageInfo, setUsersPageInfo] = useState<PageInfo | null>(null);
+  const [usersTotalPages, setUsersTotalPages] = useState(1);
   const [usersPage, setUsersPage] = useState(0);
 
-  // Pots table
-  const [pots, setPots] = useState<AdminRoom[]>([]);
-  const [potsPageInfo, setPotsPageInfo] = useState<PageInfo | null>(null);
+  const [pots, setPots] = useState<AdminPot[]>([]);
+  const [potsTotalPages, setPotsTotalPages] = useState(1);
   const [potsPage, setPotsPage] = useState(0);
-  const [landmarkMap, setLandmarkMap] = useState<Record<number, string>>({});
-
-  // Reports filter and pagination
-  const [page, setPage] = useState(0);
-  const [isProcessed, setIsProcessed] = useState<boolean | undefined>(
-    undefined
-  );
+  const [totalPots, setTotalPots] = useState<number | null>(null);
 
   useEffect(() => {
     if (userRole && userRole !== 'ADMIN') {
@@ -46,54 +35,12 @@ const AdminPage = () => {
 
   useEffect(() => {
     if (userRole !== 'ADMIN') return;
-    const fetchLandmarks = async () => {
-      try {
-        const data = await getLandmarks();
-        if (data?.landmarks) {
-          const map: Record<number, string> = {};
-          // biome-ignore lint/suspicious/noExplicitAny:
-          for (const l of data.landmarks as any[]) {
-            map[l.id] = l.name;
-          }
-          setLandmarkMap(map);
-        }
-      } catch {
-        // ignore
-      }
-    };
-    fetchLandmarks();
-  }, [userRole]);
-
-  // Fetch stats
-  useEffect(() => {
-    if (userRole !== 'ADMIN') return;
-    const fetchStats = async () => {
-      try {
-        const [usersRes, roomsRes] = await Promise.allSettled([
-          getAdminUsers(0, 1),
-          getAdminRooms(0, 1),
-        ]);
-        if (usersRes.status === 'fulfilled') {
-          setTotalUsers(usersRes.value.page.totalElements);
-        }
-        if (roomsRes.status === 'fulfilled') {
-          setTotalPots(roomsRes.value.page.totalElements);
-        }
-      } catch {
-        // ignore
-      }
-    };
-    fetchStats();
-  }, [userRole]);
-
-  // Fetch users
-  useEffect(() => {
-    if (userRole !== 'ADMIN') return;
     const fetchUsers = async () => {
       try {
         const res = await getAdminUsers(usersPage, 20);
         setUsers(res.content);
-        setUsersPageInfo(res.page);
+        setUsersTotalPages(res.totalPages);
+        setTotalUsers(res.totalElements);
       } catch {
         // ignore
       }
@@ -101,14 +48,14 @@ const AdminPage = () => {
     fetchUsers();
   }, [userRole, usersPage]);
 
-  // Fetch pots
   useEffect(() => {
     if (userRole !== 'ADMIN') return;
     const fetchPots = async () => {
       try {
-        const res = await getAdminRooms(potsPage, 10);
+        const res = await getAdminPots(potsPage, 20);
         setPots(res.content);
-        setPotsPageInfo(res.page);
+        setPotsTotalPages(res.totalPages);
+        setTotalPots(res.totalElements);
       } catch {
         // ignore
       }
@@ -116,54 +63,38 @@ const AdminPage = () => {
     fetchPots();
   }, [userRole, potsPage]);
 
-  // Fetch reports
-  useEffect(() => {
-    if (userRole === 'ADMIN') {
-      const fetchReports = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const response = await getReports({
-            isProcessed,
-            pageable: { page, size: 10, sort: ['reportedAt,desc'] },
-          });
-          setReports(response.content);
-          setPageInfo(response.page);
-        } catch (err: unknown) {
-          if (isAxiosError(err) && err.response?.status === 403) {
-            setError('You do not have permission to view this page.');
-          } else {
-            setError('Error fetching reports.');
-          }
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchReports();
-    } else {
-      setLoading(false);
+  const handleSuspend = async (user: AdminUser) => {
+    if (user.suspended) return;
+    const days = window.prompt(`${user.username} 정지 기간 (일 수):`, '7');
+    if (days === null) return;
+    const daysNum = Number(days);
+    if (!daysNum || daysNum <= 0) return;
+    try {
+      await suspendUser(user.id, daysNum);
+      setUsers((prev) =>
+        prev.map((u) => (u.id === user.id ? { ...u, suspended: true } : u))
+      );
+    } catch {
+      alert('정지 처리에 실패했습니다.');
     }
-  }, [page, isProcessed, userRole]);
-
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
-    setPage(0);
-    setIsProcessed(value === '' ? undefined : value === 'true');
   };
 
-  const formatStatus = (status: string) => {
-    const map: Record<string, string> = {
-      RECRUITING: '모집중',
-      SUCCESS: '성사됨',
-      FAILED: '실패',
-      EXPIRED: '만료됨',
-    };
-    return map[status] ?? status;
+  const handleUnsuspend = async (user: AdminUser) => {
+    try {
+      await unsuspendUser(user.id);
+      setUsers((prev) =>
+        prev.map((u) => (u.id === user.id ? { ...u, suspended: false } : u))
+      );
+    } catch {
+      alert('정지 해제에 실패했습니다.');
+    }
   };
 
-  const formatDate = (dateStr?: string) => {
+  const formatDate = (dateStr?: string | null) => {
     if (!dateStr) return '—';
-    return new Date(dateStr).toLocaleString('ko-KR', {
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return '—';
+    return d.toLocaleString('ko-KR', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -180,7 +111,6 @@ const AdminPage = () => {
     <div className="admin-container">
       <h1>관리자 페이지</h1>
 
-      {/* Stats Cards */}
       <div className="admin-stats-row">
         <div className="admin-stat-card">
           <div className="admin-stat-label">총 사용자 수</div>
@@ -188,17 +118,27 @@ const AdminPage = () => {
             {totalUsers !== null ? totalUsers.toLocaleString() : '—'}
           </div>
         </div>
-        <div className="admin-stat-card">
-          <div className="admin-stat-label">총 팟 개수</div>
-          <div className="admin-stat-value">
-            {totalPots !== null ? totalPots.toLocaleString() : '—'}
-          </div>
-        </div>
       </div>
 
-      {/* Users Table */}
-      <h2 style={{ marginTop: '2rem' }}>사용자 목록</h2>
-      {users.length > 0 ? (
+      {/* Tabs */}
+      <div className="admin-tabs">
+        <button
+          className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
+          onClick={() => setActiveTab('users')}
+        >
+          사용자 목록
+          {totalUsers !== null ? ` (${totalUsers.toLocaleString()})` : ''}
+        </button>
+        <button
+          className={`admin-tab ${activeTab === 'pots' ? 'active' : ''}`}
+          onClick={() => setActiveTab('pots')}
+        >
+          전체 팟 목록
+          {totalPots !== null ? ` (${totalPots.toLocaleString()})` : ''}
+        </button>
+      </div>
+
+      {activeTab === 'users' && users.length > 0 ? (
         <>
           <table className="reports-table">
             <thead>
@@ -209,6 +149,7 @@ const AdminPage = () => {
                 <th>권한</th>
                 <th>가입 일시</th>
                 <th>정지 여부</th>
+                <th>관리</th>
               </tr>
             </thead>
             <tbody>
@@ -226,10 +167,27 @@ const AdminPage = () => {
                   </td>
                   <td>{formatDate(user.createdAt)}</td>
                   <td>
-                    {user.isSuspended ? (
+                    {user.suspended ? (
                       <span className="status unprocessed">정지됨</span>
                     ) : (
                       <span className="status processed">정상</span>
+                    )}
+                  </td>
+                  <td>
+                    {user.suspended ? (
+                      <button
+                        className="unsuspend-btn"
+                        onClick={() => handleUnsuspend(user)}
+                      >
+                        정지 해제
+                      </button>
+                    ) : (
+                      <button
+                        className="suspend-btn"
+                        onClick={() => handleSuspend(user)}
+                      >
+                        정지
+                      </button>
                     )}
                   </td>
                 </tr>
@@ -238,173 +196,95 @@ const AdminPage = () => {
           </table>
           <div className="pagination">
             <button
+              className="pagination-arrow"
               onClick={() => setUsersPage((p) => p - 1)}
               disabled={usersPage === 0}
             >
-              이전
+              ‹
             </button>
-            <span>
-              {usersPageInfo ? usersPageInfo.number + 1 : 1} /{' '}
-              {usersPageInfo ? Math.max(1, usersPageInfo.totalPages) : 1}
-            </span>
+            {Array.from({ length: usersTotalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`pagination-page ${usersPage === i ? 'active' : ''}`}
+                onClick={() => setUsersPage(i)}
+              >
+                {i + 1}
+              </button>
+            ))}
             <button
+              className="pagination-arrow"
               onClick={() => setUsersPage((p) => p + 1)}
-              disabled={
-                usersPageInfo
-                  ? usersPageInfo.number + 1 >= usersPageInfo.totalPages
-                  : true
-              }
+              disabled={usersPage + 1 >= usersTotalPages}
             >
-              다음
+              ›
             </button>
           </div>
         </>
-      ) : (
+      ) : activeTab === 'users' ? (
         <p style={{ color: '#868e96' }}>사용자 데이터를 불러올 수 없습니다.</p>
-      )}
+      ) : null}
 
-      {/* Pots Table */}
-      <h2 style={{ marginTop: '2rem' }}>전체 팟 목록</h2>
-      {pots.length > 0 ? (
+      {activeTab === 'pots' && pots.length > 0 ? (
         <>
           <table className="reports-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>팟 ID</th>
                 <th>출발지</th>
                 <th>도착지</th>
                 <th>출발 시간</th>
-                <th>인원</th>
-                <th>상태</th>
-                <th>채팅 열람</th>
+                <th>참여 인원</th>
+                <th>카카오 호출 상태</th>
+                <th>카카오 호출 시간</th>
+                <th>오류</th>
+                <th>생성 일시</th>
               </tr>
             </thead>
             <tbody>
               {pots.map((pot) => (
-                <tr key={pot.id}>
-                  <td>{pot.id}</td>
-                  <td>{landmarkMap[pot.departureId] ?? pot.departureId}</td>
-                  <td>{landmarkMap[pot.destinationId] ?? pot.destinationId}</td>
-                  <td>{new Date(pot.departureTime).toLocaleString('ko-KR')}</td>
-                  <td>
-                    {pot.currentCount}/{pot.maxCapacity}
-                  </td>
-                  <td>
-                    <span className={`status ${pot.status.toLowerCase()}`}>
-                      {formatStatus(pot.status)}
-                    </span>
-                  </td>
-                  <td>
-                    <Link
-                      to={`/admin/chat/${pot.id}`}
-                      className="admin-chat-link"
-                    >
-                      채팅 보기
-                    </Link>
-                  </td>
+                <tr key={pot.potId}>
+                  <td>{pot.potId}</td>
+                  <td>{pot.departureName}</td>
+                  <td>{pot.destinationName}</td>
+                  <td>{formatDate(pot.departureTime)}</td>
+                  <td>{pot.participantCount}</td>
+                  <td>{pot.kakaoCallStatus || '—'}</td>
+                  <td>{pot.kakaoCallAt ? formatDate(pot.kakaoCallAt) : '—'}</td>
+                  <td>{pot.kakaoCallError || '—'}</td>
+                  <td>{formatDate(pot.createdAt)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="pagination">
             <button
+              className="pagination-arrow"
               onClick={() => setPotsPage((p) => p - 1)}
               disabled={potsPage === 0}
             >
-              이전
+              ‹
             </button>
-            <span>
-              {potsPageInfo ? potsPageInfo.number + 1 : 1} /{' '}
-              {potsPageInfo ? Math.max(1, potsPageInfo.totalPages) : 1}
-            </span>
+            {Array.from({ length: potsTotalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`pagination-page ${potsPage === i ? 'active' : ''}`}
+                onClick={() => setPotsPage(i)}
+              >
+                {i + 1}
+              </button>
+            ))}
             <button
+              className="pagination-arrow"
               onClick={() => setPotsPage((p) => p + 1)}
-              disabled={
-                potsPageInfo
-                  ? potsPageInfo.number + 1 >= potsPageInfo.totalPages
-                  : true
-              }
+              disabled={potsPage + 1 >= potsTotalPages}
             >
-              다음
+              ›
             </button>
           </div>
         </>
-      ) : (
+      ) : activeTab === 'pots' ? (
         <p style={{ color: '#868e96' }}>팟 데이터를 불러올 수 없습니다.</p>
-      )}
-
-      {/* Reports Section */}
-      <h2 style={{ marginTop: '2rem' }}>신고 목록</h2>
-      <div className="filters">
-        <label htmlFor="status-filter">Filter by status:</label>
-        <select
-          id="status-filter"
-          onChange={handleFilterChange}
-          value={isProcessed === undefined ? '' : String(isProcessed)}
-        >
-          <option value="">All</option>
-          <option value="false">Unprocessed</option>
-          <option value="true">Processed</option>
-        </select>
-      </div>
-
-      {loading && <p>Loading reports...</p>}
-      {error && <p className="error-message">{error}</p>}
-
-      {!loading && !error && (
-        <>
-          <table className="reports-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Reported User</th>
-                <th>Reporter</th>
-                <th>Reason</th>
-                <th>Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reports.map((report) => (
-                <tr key={report.id}>
-                  <td>
-                    <Link to={`/admin/reports/${report.id}`}>{report.id}</Link>
-                  </td>
-                  <td>{report.reportedEmail}</td>
-                  <td>{report.reporterEmail}</td>
-                  <td>{report.reason}</td>
-                  <td>{new Date(report.reportedAt).toLocaleDateString()}</td>
-                  <td>
-                    <span
-                      className={`status ${report.isProcessed ? 'processed' : 'unprocessed'}`}
-                    >
-                      {report.isProcessed ? 'Processed' : 'Unprocessed'}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div className="pagination">
-            <button onClick={() => setPage((p) => p - 1)} disabled={page === 0}>
-              Previous
-            </button>
-            <span>
-              Page {pageInfo ? pageInfo.number + 1 : 1} of{' '}
-              {pageInfo ? Math.max(1, pageInfo.totalPages) : 1}
-            </span>
-            <button
-              onClick={() => setPage((p) => p + 1)}
-              disabled={
-                pageInfo ? pageInfo.number + 1 >= pageInfo.totalPages : true
-              }
-            >
-              Next
-            </button>
-          </div>
-        </>
-      )}
+      ) : null}
     </div>
   );
 };

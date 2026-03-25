@@ -129,6 +129,18 @@ export const getKakaoDeepLink = async (roomId: number): Promise<string> => {
   return response.data;
 };
 
+// Track Kakao Deep Link result
+export const trackKakaoDeepLink = async (
+  roomId: number,
+  success: boolean,
+  error?: string
+): Promise<void> => {
+  await apiClient.post(`/rooms/${roomId}/kakao-deep-link/track`, {
+    success,
+    error: error ?? null,
+  });
+};
+
 // New API call: Kick user from room
 export const kickUserFromRoom = async (
   roomId: number,

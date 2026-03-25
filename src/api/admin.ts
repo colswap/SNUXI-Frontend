@@ -97,12 +97,15 @@ export interface AdminUser {
   username: string;
   role: string;
   createdAt?: string;
-  isSuspended?: boolean;
+  suspended?: boolean;
 }
 
 interface AdminUsersResponse {
   content: AdminUser[];
-  page: PageInfo;
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
 }
 
 export const getAdminUsers = async (
@@ -115,28 +118,42 @@ export const getAdminUsers = async (
   return response.data;
 };
 
-// ================= /admin/rooms =================
-export interface AdminRoom {
-  id: number;
-  departureId: number;
-  destinationId: number;
+// ================= /admin/users/{userId}/unsuspend =================
+export const unsuspendUser = async (
+  userId: number
+): Promise<{ userId: number; status: string }> => {
+  const response = await apiClient.post<{ userId: number; status: string }>(
+    `/admin/users/${userId}/unsuspend`
+  );
+  return response.data;
+};
+
+// ================= /admin/pots =================
+export interface AdminPot {
+  potId: number;
+  departureName: string;
+  destinationName: string;
   departureTime: string;
-  status: string;
-  currentCount: number;
-  maxCapacity: number;
-  minCapacity: number;
+  participantCount: number;
+  kakaoCallStatus: string;
+  kakaoCallAt: string | null;
+  kakaoCallError: string | null;
+  createdAt: string;
 }
 
-interface AdminRoomsResponse {
-  content: AdminRoom[];
-  page: PageInfo;
+interface AdminPotsResponse {
+  content: AdminPot[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
 }
 
-export const getAdminRooms = async (
+export const getAdminPots = async (
   page = 0,
-  size = 10
-): Promise<AdminRoomsResponse> => {
-  const response = await apiClient.get<AdminRoomsResponse>('/admin/rooms', {
+  size = 20
+): Promise<AdminPotsResponse> => {
+  const response = await apiClient.get<AdminPotsResponse>('/admin/pots', {
     params: { page, size },
   });
   return response.data;
