@@ -21,7 +21,7 @@ const BellToggle = ({ className }: BellToggleProps) => {
     if (!enabled) {
       if (isIOS && !isStandalone) {
         alert(
-          '📲 iPhone에서 알림을 받으려면:\n\n1. Safari 하단 공유 버튼(□↑) 탭\n2. "홈 화면에 추가" 선택\n3. 홈 화면의 SNUXI 앱으로 실행\n\n이후 알림을 켤 수 있어요!'
+          'iPhone에서 알림을 받으려면:\n\n1. Safari 하단 공유 버튼 탭\n2. "홈 화면에 추가" 선택\n3. 홈 화면의 SNUXI 앱으로 실행\n\n이후 알림을 켤 수 있어요!'
         );
         return;
       }
