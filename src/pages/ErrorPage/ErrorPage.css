@@ -44,6 +44,8 @@
 }
 
 .home-button {
+  display: block;
+  width: 100%;
   background: var(--brand-gradient);
   color: #ffffff;
   border: none;
@@ -53,7 +55,8 @@
   font-size: 0.95rem;
   font-weight: 700;
   transition: opacity 0.2s, transform 0.1s;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  margin-bottom: 10px;
 }
 
 .home-button:hover {
@@ -62,4 +65,11 @@
 
 .home-button:active {
   transform: scale(0.97);
+}
+
+.home-button.secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
+  box-shadow: none;
 }

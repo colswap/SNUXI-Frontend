@@ -1,8 +1,8 @@
 :root {
-  --brand-primary: #111827;
-  --brand-secondary: #374151;
-  --brand-gradient: linear-gradient(135deg, #111827 0%, #374151 100%);
-  --accent: #d97706;
+  --brand-primary: #2563eb;
+  --brand-secondary: #1d4ed8;
+  --brand-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --accent: #f97316;
   --bg-base: #f9fafb;
   --bg-card: #ffffff;
   --text-primary: #111827;
@@ -32,9 +32,11 @@
 }
 
 body {
-  padding-top: 64px;
+  padding-top: 0;
+  padding-bottom: 60px;
   background-color: var(--bg-base);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR",
+    sans-serif;
   margin: 0;
 }

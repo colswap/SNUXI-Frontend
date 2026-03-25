@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../../api/constants';
 import apiClient from '../../api/index';
 import { getLandmarks } from '../../api/map';
+import { getUserPots } from '../../api/room';
 import { isLoggedInAtom } from '../../common/user';
 import { type RoomData } from '../../types';
 import RoomCard from './RoomCard';
@@ -49,6 +50,8 @@ const RoomSearch = () => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  const [myPotIds, setMyPotIds] = useState<Set<number>>(new Set());
+
   // --- 모달 상태 ---
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -58,6 +61,14 @@ const RoomSearch = () => {
   const loadingRef = useRef(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  // 0. 내 팟 IDs 가져오기
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    getUserPots()
+      .then((pots) => setMyPotIds(new Set(pots.map((p) => p.id))))
+      .catch(() => setMyPotIds(new Set()));
+  }, [isLoggedIn]);
 
   // 1. 랜드마크 데이터 불러오기
   useEffect(() => {
@@ -200,6 +211,11 @@ const RoomSearch = () => {
 
   const handleJoinConfirm = async () => {
     if (!selectedRoomId) return;
+    if (myPotIds.size >= 3) {
+      alert('최대 3개 방을 참여할 수 있습니다.');
+      setShowJoinModal(false);
+      return;
+    }
     try {
       await apiClient.post(`/rooms/${selectedRoomId}/join`);
       navigate('/my-chat');
@@ -235,9 +251,26 @@ const RoomSearch = () => {
 
   return (
     <div className="search-container">
+      {/* 모바일 앱바 */}
+      <div className="mobile-app-bar">
+        <span className="app-bar-logo">SNUXI</span>
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="app-bar-bell"
+        >
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 01-3.46 0" />
+        </svg>
+      </div>
+
       <div className="sticky-header">
-        <h1>택시팟 찾기</h1>
-        <p className="header-subtitle">SNU 학생들과 함께 택시를 나눠요</p>
         <div className="search-filter-card">
           <div className="filter-row">
             <select
@@ -268,17 +301,30 @@ const RoomSearch = () => {
       </div>
 
       <div className="room-list-scroll">
+        <div className="section-header">
+          <span className="section-title">지금 모집중</span>
+        </div>
         {rooms.length > 0
           ? rooms.map((room) => (
               <RoomCard
                 key={room.roomId}
                 room={room}
                 onClick={handleRoomClick}
+                isMyPot={myPotIds.has(room.roomId)}
               />
             ))
           : !loading && (
               <div className="no-result">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M5 11l1.5-4.5h11L19 11" />
                   <rect x="2" y="11" width="20" height="7" rx="2" />
                   <circle cx="7" cy="18" r="2" />

@@ -13,7 +13,6 @@ const NavBar = () => {
 
   const mainLinks = [
     { path: '/search-room', label: '택시팟 찾기' },
-    { path: '/create-room', label: '택시팟 만들기' },
     { path: '/my-chat', label: '나의 택시팟' },
   ];
 
@@ -63,7 +62,9 @@ const NavBar = () => {
           {/* Right — desktop only */}
           <div className="nav-right">
             {userRole === 'ADMIN' && (
-              <Link to="/admin" className="admin-link">관리자</Link>
+              <Link to="/admin" className="admin-link">
+                관리자
+              </Link>
             )}
             <Link
               to="/my-page"
@@ -72,9 +73,21 @@ const NavBar = () => {
               마이페이지
             </Link>
             {isLoggedIn ? (
-              <button type="button" onClick={handleLogout} className="login-button">로그아웃</button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="login-button"
+              >
+                로그아웃
+              </button>
             ) : (
-              <button type="button" onClick={handleGoogleLogin} className="login-button">로그인</button>
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                className="login-button"
+              >
+                로그인
+              </button>
             )}
           </div>
 
@@ -86,12 +99,28 @@ const NavBar = () => {
             aria-label="메뉴"
           >
             {isMenuOpen ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             ) : (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
                 <line x1="3" y1="7" x2="21" y2="7" />
                 <line x1="3" y1="12" x2="21" y2="12" />
                 <line x1="3" y1="17" x2="21" y2="17" />
@@ -122,13 +151,37 @@ const NavBar = () => {
             마이페이지
           </Link>
           {userRole === 'ADMIN' && (
-            <Link to="/admin" className="mobile-menu-item admin" onClick={closeMenu}>관리자</Link>
+            <Link
+              to="/admin"
+              className="mobile-menu-item admin"
+              onClick={closeMenu}
+            >
+              관리자
+            </Link>
           )}
           <div className="mobile-menu-divider" />
           {isLoggedIn ? (
-            <button type="button" className="mobile-login-btn" onClick={() => { handleLogout(); closeMenu(); }}>로그아웃</button>
+            <button
+              type="button"
+              className="mobile-login-btn"
+              onClick={() => {
+                handleLogout();
+                closeMenu();
+              }}
+            >
+              로그아웃
+            </button>
           ) : (
-            <button type="button" className="mobile-login-btn" onClick={() => { handleGoogleLogin(); closeMenu(); }}>로그인</button>
+            <button
+              type="button"
+              className="mobile-login-btn"
+              onClick={() => {
+                handleGoogleLogin();
+                closeMenu();
+              }}
+            >
+              로그인
+            </button>
           )}
         </div>
       )}

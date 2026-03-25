@@ -68,7 +68,7 @@
 }
 
 .nav-item::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 14px;
@@ -90,7 +90,7 @@
   justify-content: flex-end;
   align-items: center;
   gap: 8px;
-  padding-right: 16px;
+  margin-right: -12px;
 }
 
 .admin-link {
@@ -122,7 +122,7 @@
 }
 
 .mypage-icon-link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 14px;
@@ -244,22 +244,6 @@
   opacity: 0.85;
 }
 
-/* ── Mobile breakpoint ── */
-@media (max-width: 768px) {
-  .navBar {
-    grid-template-columns: auto 1fr auto;
-    padding: 0 16px;
-  }
-
-  .nav-center {
-    display: none;
-  }
-
-  .nav-right {
-    display: none;
-  }
-
-  .hamburger-btn {
-    display: flex;
-  }
+.nav-wrapper {
+  display: none;
 }
