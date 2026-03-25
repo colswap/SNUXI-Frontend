@@ -723,7 +723,9 @@ const ChatRoom = () => {
                       className={`message-content ${isSelected ? 'clicked' : ''}`}
                       onClick={() => handleMessageClick(msg)}
                     >
-                      <p className="message-text">{isBotMessage ? maskBotMessage(msg.text) : msg.text}</p>
+                      <p className="message-text">
+                        {isBotMessage ? maskBotMessage(msg.text) : msg.text}
+                      </p>
                     </div>
                     {!isMyMessage && !isBotMessage && (
                       <div className="message-meta">

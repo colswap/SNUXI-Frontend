@@ -71,7 +71,13 @@ const MyChat = () => {
   const fetchPots = useCallback(async () => {
     try {
       const fetched = await getUserPots();
-      setPots([...fetched].sort((a, b) => new Date(a.departureTime).getTime() - new Date(b.departureTime).getTime()));
+      setPots(
+        [...fetched].sort(
+          (a, b) =>
+            new Date(a.departureTime).getTime() -
+            new Date(b.departureTime).getTime()
+        )
+      );
       const map: Record<number, Participant[]> = {};
       await Promise.all(
         fetched.map(async (pot) => {
@@ -369,7 +375,9 @@ const MyChat = () => {
                               </svg>
                             </div>
                           )}
-                          <span className="participant-name">{maskName(p.username)}</span>
+                          <span className="participant-name">
+                            {maskName(p.username)}
+                          </span>
                           {p.role === 'OWNER' && (
                             <span className="participant-owner-tag">방장</span>
                           )}

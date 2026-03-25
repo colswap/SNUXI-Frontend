@@ -59,7 +59,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, isMyPot }) => {
   return (
     <div
       className={`room-card${isMyPot ? ' my-pot' : ''}`}
-      onClick={() => isMyPot ? navigate('/my-chat') : onClick(room.roomId)}
+      onClick={() => (isMyPot ? navigate('/my-chat') : onClick(room.roomId))}
     >
       {/* 경로 */}
       <div className="rc-route">

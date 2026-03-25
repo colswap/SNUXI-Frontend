@@ -28,7 +28,9 @@ const ErrorPage = () => {
 
   const handleLoginWithDifferentEmail = () => {
     const uri = encodeURIComponent(window.location.origin);
-    const loginUrl = encodeURIComponent(`${BACKEND_URL}/login?redirect_uri=${uri}`);
+    const loginUrl = encodeURIComponent(
+      `${BACKEND_URL}/login?redirect_uri=${uri}`
+    );
     window.location.href = `${BACKEND_URL}/logout?redirect_uri=${loginUrl}`;
   };
 
