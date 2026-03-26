@@ -13,6 +13,7 @@ import {
 } from './common/user';
 import { usePushNotification } from './hooks/usePushNotification';
 import Router from './router/Router';
+import { trackEvent } from './utils/analytics';
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -29,6 +30,7 @@ const App = () => {
       try {
         const [user, userId] = await Promise.all([getMe(), getUserId()]);
         setIsLoggedIn(true);
+        trackEvent.login();
         setUserId(userId);
         setUserRole(user.role);
         setEmail(user.email);
