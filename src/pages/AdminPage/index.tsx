@@ -249,7 +249,11 @@ const AdminPage = () => {
                   <td>{formatDate(pot.departureTime)}</td>
                   <td>{pot.participantCount}</td>
                   <td>{pot.kakaoDeepLinkStatus || '—'}</td>
-                  <td>{pot.kakaoDeepLinkAt ? formatDate(pot.kakaoDeepLinkAt) : '—'}</td>
+                  <td>
+                    {pot.kakaoDeepLinkAt
+                      ? formatDate(pot.kakaoDeepLinkAt)
+                      : '—'}
+                  </td>
                   <td>{pot.kakaoDeepLinkError || '—'}</td>
                   <td>{formatDate(pot.createdAt)}</td>
                 </tr>
