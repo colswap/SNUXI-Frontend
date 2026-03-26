@@ -77,13 +77,21 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, isMyPot }) => {
       </div>
 
       {/* 태그 */}
+      {/* 태그 */}
       <div className="rc-chips">
         <span className="rc-chip">{timeLabel}</span>
+        {room.estimatedFee > 0 && (
+          <span className="rc-chip rc-chip-fee">
+            ~ {room.estimatedFee.toLocaleString()}원
+          </span>
+        )}
       </div>
 
       {/* 하단 */}
       <div className="rc-footer">
-        <span className="rc-host">{maskHostName(room.hostName)}</span>
+        <div className="rc-left">
+          <span className="rc-host">{maskHostName(room.hostName)}</span>
+        </div>
         <div className="rc-right">
           {isMyPot && <span className="my-pot-badge">참여중</span>}
           <span className={`rc-badge ${statusClass}`}>{statusText}</span>

@@ -7,5 +7,6 @@ export interface RoomData {
   minCapacity: number;
   maxCapacity: number;
   hostName: string;
+  estimatedFee: number;
   status: string; // 서버의 status 필드
 }
