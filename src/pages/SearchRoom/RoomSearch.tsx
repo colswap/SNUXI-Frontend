@@ -9,6 +9,7 @@ import { getUserPots } from '../../api/room';
 import { isLoggedInAtom } from '../../common/user';
 import BellToggle from '../../components/BellToggle';
 import { type RoomData } from '../../types';
+import { trackEvent } from '../../utils/analytics';
 import {
   copyUrlAndOpenSafari,
   openInExternalBrowser,
@@ -199,6 +200,7 @@ const RoomSearch = () => {
 
   // --- Handlers ---
   const handleRoomClick = (roomId: number) => {
+    trackEvent.viewPot(roomId);
     setSelectedRoomId(roomId);
     if (isLoggedIn) {
       setShowJoinModal(true);
@@ -231,6 +233,7 @@ const RoomSearch = () => {
     }
     try {
       await apiClient.post(`/rooms/${selectedRoomId}/join`);
+      trackEvent.joinPot(selectedRoomId);
       navigate('/my-chat');
     } catch (error) {
       const axiosError = error as AxiosError<{ errMsg: string }>;

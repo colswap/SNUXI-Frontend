@@ -6,6 +6,7 @@ import { getLandmarks } from '../../api/map';
 import { createRoom, getUserPots } from '../../api/room';
 import { isLoggedInAtom } from '../../common/user';
 import BellToggle from '../../components/BellToggle';
+import { trackEvent } from '../../utils/analytics';
 import {
   isNotificationsEnabled,
   requestNotificationPermission,
@@ -110,6 +111,7 @@ const CreateRoom = () => {
 
     try {
       await createRoom(roomDetails);
+      trackEvent.createPot({ departureId, destinationId });
 
       if (notifyEnabled) {
         const granted = await requestNotificationPermission();
