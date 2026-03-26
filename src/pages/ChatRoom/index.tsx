@@ -20,6 +20,7 @@ import {
 } from '../../api/room';
 import { createStompClient } from '../../api/websocket';
 import { isLoggedInAtom, userIdAtom } from '../../common/user';
+import { trackEvent } from '../../utils/analytics';
 import {
   getBotNotificationTitle,
   showNotification,
@@ -226,6 +227,7 @@ const ChatRoom = () => {
     try {
       const link = await getKakaoDeepLink(id);
       setTaxiLink(link);
+      trackEvent.callTaxi(id);
       setShowTaxiLinkModal(true);
       // 링크 실행 시도 후 track
       try {
