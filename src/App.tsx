@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { getMe } from './api/auth';
 import { getUserId } from './api/user';
@@ -11,11 +11,13 @@ import {
   userIdAtom,
   userRoleAtom,
 } from './common/user';
+import { usePushNotification } from './hooks/usePushNotification';
 import Router from './router/Router';
 
 const App = () => {
   const [loading, setLoading] = useState(true);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
+  const isLoggedIn = useAtomValue(isLoggedInAtom);
   const setUserId = useSetAtom(userIdAtom);
   const setUserRole = useSetAtom(userRoleAtom);
   const setEmail = useSetAtom(emailAtom);
@@ -47,6 +49,8 @@ const App = () => {
     setNickname,
     setProfileImage,
   ]);
+
+  usePushNotification(isLoggedIn);
 
   if (loading) {
     return <div>Loading...</div>;
