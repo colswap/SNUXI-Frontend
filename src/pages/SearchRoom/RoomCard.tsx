@@ -79,6 +79,17 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, isMyPot }) => {
       {/* 태그 */}
       <div className="rc-chips">
         <span className="rc-chip">{timeLabel}</span>
+        {!isMyPot && (
+          <button
+            className="rc-join-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick(room.roomId);
+            }}
+          >
+            참여하기
+          </button>
+        )}
       </div>
 
       {/* 하단 */}
