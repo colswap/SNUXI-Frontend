@@ -80,11 +80,9 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, isMyPot }) => {
       {/* 태그 */}
       <div className="rc-chips">
         <span className="rc-chip">{timeLabel}</span>
-        {room.estimatedFee > 0 && (
-          <span className="rc-chip rc-chip-fee">
-            ~ {room.estimatedFee.toLocaleString()}원
-          </span>
-        )}
+        <span className="rc-chip rc-chip-fee">
+          ~ {room.estimatedFee.toLocaleString()}원
+        </span>
       </div>
 
       {/* 하단 */}
